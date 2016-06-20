@@ -51,63 +51,40 @@ function delegate(selector, eventName, targetSelector, listener) {
 
 
 (function() {
-
- 	var container = document.querySelector('#container');
- 	var state = {};
-
- 	var archiveTemplate = '<h2>Archive</h2><ul id="archive-list"></ul>'
-
- 	var listTemplate = function(param){
- 		return '<li class="list-thing">' + param + '</li>'
+	var state = {};
+ 	var $container = document.querySelector('#container');
+ 	var $archiveList = function() {
+ 		return document.querySelector('#archive-list');
  	}
- 	var archiveListTemplate = function(param){
- 		return '<li class="archive-thing">' + param + '</li>'
- 	}
+ 	var archiveTemplate = '<h2>Archive</h2><ul id="archive-list"></ul>';
+ 	var $newThing = document.getElementById('new-thing');
+ 	var $myList = document.getElementById('my-list')
 
-
-
-
-
+ 	console.log($archiveList())
  	delegate('#container', 'click', 'li.list-thing', function(event){
  		console.log(event.target.textContent);
  		event.target.remove();
- 		
-
- 		if ( !document.querySelector('#archive-list') ) {
- 			document.querySelector('#container').innerHTML += archiveTemplate;
+ 		if ( !$archiveList() ) {
+ 			$container.innerHTML += archiveTemplate;
  		};
+ 		$archiveList().innerHTML += `<li class="archive-thing">${event.target.textContent}</li>`
 
- 		document.getElementById('archive-list').innerHTML+=archiveListTemplate(event.target.textContent);
-
- 
  	});
-
-
-
 
 
 
  	document.getElementById('new-thing-button').addEventListener('click', function(event){
  		event.preventDefault();
- 		var newText = document.getElementById('new-thing').value;
-
- 		if(newText.length >0){
- 			document.getElementById('my-list').innerHTML += listTemplate(newText);
- 		}
-
- 		document.getElementById('new-thing').value = '';
+ 		render($newThing.value, $myList)
  	});
-
-
- 	
-
-
-
-
 
 
 
  	function render(data, into) {
+ 		event.preventDefault();
+		into.innerHTML += `<li class="list-thing">${data}</li>`;
+ 		
+ 		$newThing.value = '';
  	}
 
 
