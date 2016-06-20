@@ -60,12 +60,15 @@ function delegate(selector, eventName, targetSelector, listener) {
  	var listTemplate = function(param){
  		return '<li class="list-thing">' + param + '</li>'
  	}
+ 	var archiveListTemplate = function(param){
+ 		return '<li class="archive-thing">' + param + '</li>'
+ 	}
 
 
 
 
 
- 	delegate('#my-list', 'click', 'li', function(event){
+ 	delegate('#container', 'click', 'li.list-thing', function(event){
  		console.log(event.target.textContent);
  		event.target.remove();
  		
@@ -74,7 +77,7 @@ function delegate(selector, eventName, targetSelector, listener) {
  			document.querySelector('#container').innerHTML += archiveTemplate;
  		};
 
- 		document.getElementById('archive-list').innerHTML+=listTemplate(event.target.textContent);
+ 		document.getElementById('archive-list').innerHTML+=archiveListTemplate(event.target.textContent);
 
  
  	});
