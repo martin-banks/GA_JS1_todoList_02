@@ -46,7 +46,7 @@ function closest(element, query) {
 //	return null
 }
 
-// selector = parent DOM element
+// selctor = parent DOM element
 // eventName = 'click' / user action
 // targetSelector: child element of slector to run function(listener) on
 // listener: function to call
@@ -69,77 +69,49 @@ function delegate(selector, eventName, targetSelector, listener) {
 
 
 
-
-
-
-
-
-
 (function() {
 	var state = {};
-
+	var $container = document.querySelector('#container');
 	var $archiveList = function() {
 		return document.querySelector('#archive-list');
 	}
-	var $myList = function(){
-		return document.getElementById('my-list')
-	}
+	var $newThing = document.getElementById('new-thing');
+	var $myList = document.getElementById('my-list')
+
+	document.querySelector('body').innerHTML += '<h2>Archive</h2><ul id="archive-list"></ul>';
+
+	delegate('#container', 'click', 'li.list-thing', function(event){
+		console.log(event.target.textContent);
+		event.target.remove();
+		/*if ( !$archiveList() ) {
+			document.querySelector('body').innerHTML += '<h2>Archive</h2><ul id="archive-list"></ul>';
+		};*/
+		$archiveList().innerHTML += `<li class="archive-thing">${event.target.textContent}</li>`;
+		//return null;
+	});
 
 
-	delegate('body', 'click', 'li', function(event){
-		if ( !$archiveList() ) {
-			document.querySelector('#container').innerHTML += '<h2>Archive</h2><ul id="archive-list"></ul>';
-		};
-
-		state.text = event.target.textContent;
-		if (event.target.parentNode.id === 'my-list'){
-			event.target.remove()
-			
-			state.placeIn = 'archive';
-			updateList(state);
-			
-			//return false;
-		} 
-		else if (event.target.parentNode.id === 'archive-list'){
-			console.log('is archive, do nothing');
-		}	
-
-	},true);
-
-
-	delegate('body', 'click', '#new-thing-button', function(event){
+	delegate('form', 'click', '#new-thing-button', function(event){
 		event.preventDefault();
-
-		if(document.getElementById('new-thing').value.length>0){
-			state.placeIn = 'todo';
-			state.text = document.getElementById('new-thing').value
-			updateList(state)
-		};
+		console.log('button clicked');
+		console.log(document.getElementById('new-thing').value);
+		//render($newThing, $myList);
+		render(document.getElementById('new-thing'), $myList);
 		
 	})
 
 
-	function updateList(data ){
-		var listTemplate = `<li>${data.text}</li>`;
-
-		if (data.placeIn === 'todo'){ // put in todo list
-			document.getElementById('my-list').innerHTML += listTemplate;
-			document.getElementById('new-thing').value = '';	
-		} 
-		else if (data.placeIn === 'archive'){ // put in archive
-			document.getElementById('archive-list').innerHTML += listTemplate;
-		}
-		state.placeIn = '';
-		//return false;
-
+	function render(data, into) {
+	//	event.preventDefault();
+		//if(data.length>0){
+			console.log(data.value);
+			console.log(into)
+			into.innerHTML += `<li class="list-thing">${data.value}</li>`;
+	//	};
+		
+		$newThing.value = '';
+		//return null;
 	}
-	
-
-
 
 
 })()
-
-
-
-
