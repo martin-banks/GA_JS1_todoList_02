@@ -43,7 +43,7 @@ function closest(element, query) {
 		// element operating on moves up DOM tree
 		element = element.parentNode
 	}
-//	return null
+	return null
 }
 
 // selector = parent DOM element
@@ -81,58 +81,60 @@ function delegate(selector, eventName, targetSelector, listener) {
 	var $archiveList = function() {
 		return document.querySelector('#archive-list');
 	}
-	var $myList = function(){
-		return document.getElementById('my-list')
-	}
+	//document.querySelector('#container').innerHTML += '<h2 id="archive-head">Archive</h2><ul id="archive-list"></ul>';
 
 
-	delegate('body', 'click', 'li', function(event){
-		if ( !$archiveList() ) {
-			document.querySelector('#container').innerHTML += '<h2>Archive</h2><ul id="archive-list"></ul>';
-		};
-
-		state.text = event.target.textContent;
-		if (event.target.parentNode.id === 'my-list'){
-			event.target.remove()
-			
-			state.placeIn = 'archive';
-			updateList(state);
-			
-			//return false;
-		} 
-		else if (event.target.parentNode.id === 'archive-list'){
-			console.log('is archive, do nothing');
-		}	
-
-	},true);
-
-
-	delegate('body', 'click', '#new-thing-button', function(event){
-		event.preventDefault();
-
-		if(document.getElementById('new-thing').value.length>0){
-			state.placeIn = 'todo';
-			state.text = document.getElementById('new-thing').value
-			updateList(state)
-		};
-		
-	})
-
-
-	function updateList(data ){
+	function updateList(data, removeThis){
 		var listTemplate = `<li>${data.text}</li>`;
-
 		if (data.placeIn === 'todo'){ // put in todo list
 			document.getElementById('my-list').innerHTML += listTemplate;
 			document.getElementById('new-thing').value = '';	
 		} 
 		else if (data.placeIn === 'archive'){ // put in archive
 			document.getElementById('archive-list').innerHTML += listTemplate;
+			removeThis.remove();
 		}
 		state.placeIn = '';
-		//return false;
-
+		state.text = '';
 	}
+
+
+	delegate('#my-list', 'click', 'li', function(event){
+		console.log('event', event.target);
+		console.log('delegate.target', event.delegateTarget);
+		console.log('parentNode', event.target.parentNode);
+
+		if ( !document.getElementById('archive-head') ) {
+			var arcHead = document.createElement('h2');
+				arcHead.id = 'archive-head';
+				arcHead.textContent = 'Archive';
+			document.getElementById('container').appendChild(arcHead);
+			
+			var archiveList = document.createElement('ul');
+				archiveList.id = 'archive-list';
+			document.getElementById('container').appendChild(archiveList)
+		};
+		state.text = event.target.textContent;
+		state.placeIn = 'archive';
+		updateList(state, event.target);	
+		// stop bubble pahse as event.target has been removed from nodeList 
+		event.stopPropagation(); 
+		return false;
+	});
+
+
+	delegate('body', 'click', '#new-thing-button', function(event){
+		event.preventDefault();
+		if(document.getElementById('new-thing').value.length>0){
+			state.placeIn = 'todo';
+			state.text = document.getElementById('new-thing').value
+			updateList(state);
+		};
+		
+	})
+
+
+	
 	
 
 
