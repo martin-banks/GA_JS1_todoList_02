@@ -1,27 +1,6 @@
-/* DOM Manipulation: Independent Practice
-
-To complete this excercise, you must meet the following requirements:
-
-- When the user clicks the "#new-thing-button" button, add whatever is in the input box to the "#my-list" list.
-- Only add an item if the input box is not blank.
-- Clear the input box when the user clicks the button.
-
-Your code must use these features:
-
-- Event delegation (Utilities: http://bit.ly/js1-utilities )
-- Separate State from DOM
-- Use a View Template
-
-Here are some bonus tasks to push your DOM knowledge!
-- Bonus tasks:
-	- When a list item is archived, change its background colour to "green"
-	- Add a link to each item to delete it completely
-	- Instead of deleting it completely, move it to a second list called "Archive"
-
-*/
 // delegate function from remote file
 
-// not in use for this demo
+// not in use for this project
 function siblings(selector) {
 	var element = document.querySelector(selector)
 	var childElements = Array.from(element.parentNode.children)
@@ -29,9 +8,7 @@ function siblings(selector) {
 		return child !== element
 	})
 }
-
 /* --------------------- */
-
 
 // element = DOM element interacted with
 // query = DOM element we're looking for
@@ -68,37 +45,30 @@ function delegate(selector, eventName, targetSelector, listener) {
 }
 
 
-
-
-
-
-
-
-
+//////////////////////////////////////////////////////
+// JS NOTES V2 ///////////////////////////////////////
+//////////////////////////////////////////////////////
 (function() {
 	var state = {};
-
 	var $archiveList = function() {
 		return document.querySelector('#archive-list');
-	}
-	//document.querySelector('#container').innerHTML += '<h2 id="archive-head">Archive</h2><ul id="archive-list"></ul>';
-
+	};
 
 	function updateList(data, removeThis){
 		var listTemplate = `<li>${data.text}</li>`;
 		if (data.placeIn === 'todo'){ // put in todo list
-			document.getElementById('my-list').innerHTML += listTemplate;
+			document.getElementById('my-list').innerHTML += listTemplate; // better alternative to += ?
 			document.getElementById('new-thing').value = '';	
-		} 
+		} ;
 		else if (data.placeIn === 'archive'){ // put in archive
-			document.getElementById('archive-list').innerHTML += listTemplate;
+			document.getElementById('archive-list').innerHTML += listTemplate; 
 			removeThis.remove();
-		}
+		};
 		state.placeIn = '';
 		state.text = '';
-	}
+	};
 
-
+	// delegate for clicking on li in todo list - creates and moves to archive
 	delegate('#my-list', 'click', 'li', function(event){
 		console.log('event', event.target);
 		console.log('delegate.target', event.delegateTarget);
@@ -106,31 +76,30 @@ function delegate(selector, eventName, targetSelector, listener) {
 
 		if ( !document.getElementById('archive-head') ) {
 			var arcHead = document.createElement('h2');
-				arcHead.id = 'archive-head';
-				arcHead.textContent = 'Archive';
+			arcHead.id = 'archive-head';
+			arcHead.textContent = 'Archive';
 			document.getElementById('container').appendChild(arcHead);
-			
+
 			var archiveList = document.createElement('ul');
-				archiveList.id = 'archive-list';
+			archiveList.id = 'archive-list';
 			document.getElementById('container').appendChild(archiveList)
 		};
 		state.text = event.target.textContent;
 		state.placeIn = 'archive';
 		updateList(state, event.target);	
-		// stop bubble pahse as event.target has been removed from nodeList 
+		// stop bubble phase as event.target has been removed from nodeList 
 		event.stopPropagation(); 
 		return false;
 	});
 
-
+	// delegate for clicking on 'create new thing' button
 	delegate('body', 'click', '#new-thing-button', function(event){
 		event.preventDefault();
 		if(document.getElementById('new-thing').value.length>0){
 			state.placeIn = 'todo';
-			state.text = document.getElementById('new-thing').value
+			state.text = document.getElementById('new-thing').value;
 			updateList(state);
 		};
-		
 	})
 
 
