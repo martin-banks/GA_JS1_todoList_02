@@ -16,22 +16,27 @@
 		state.text = '';
 	};
 
+	 function createaArhive(){
+	 	var arcHead = document.createElement('h2'); // create one
+			arcHead.id = 'archive-head';
+			arcHead.textContent = 'Archive';
+		document.getElementById('container').appendChild(arcHead); // append to #container
+
+			var archiveList = document.createElement('ul'); // create ul for archive
+			archiveList.id = 'archive-list';
+		document.getElementById('container').appendChild(archiveList) 
+	 }
+
 	// delegate for clicking on li in todo list - creates and moves to archive
 	delegate('#my-list', 'click', 'li', function(event){
 		console.log('event', event.target); // what was clicked
 		console.log('delegate.target', event.delegateTarget); // what was clicked -  from delegate function
 		console.log('parentNode', event.target.parentNode); // clicked item parent
 
-		if ( !document.getElementById('archive-head') ) { // if there is no 'archive'
-			var arcHead = document.createElement('h2'); // create one
-			arcHead.id = 'archive-head';
-			arcHead.textContent = 'Archive';
-			document.getElementById('container').appendChild(arcHead); // append to #container
+		// if there is no 'archive'
+		// ternary expression: (satement) ? (action if true) : (action if false)
+		(!document.getElementById('archive-head')) ? (createaArhive()) : "";
 
-			var archiveList = document.createElement('ul'); // create ul for archive
-			archiveList.id = 'archive-list';
-			document.getElementById('container').appendChild(archiveList) 
-		};
 		state.text = event.target.textContent; // set text in state object
 		state.placeIn = 'archive'; // set list to put todo in 
 		updateList(state, event.target);//stop bubble phase as event.target has been removed from nodeList 
@@ -49,7 +54,7 @@
 			updateList(state);
 		};
 	});
-	
+
 })();
 
 
